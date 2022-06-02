@@ -1,0 +1,14 @@
+{
+ "scripts": {
+  "build": "rimraf dist && tsc"
+ },
+ "devDependencies": {
+  "typescript": "^4.7.2"
+ },
+ "engines": {
+  "node": "16.x"
+ },
+ "dependencies": {
+  "rimraf": "^3.0.2"
+ }
+}
