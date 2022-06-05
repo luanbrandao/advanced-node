@@ -20,5 +20,5 @@
     // "strictPropertyInitialization": true
     // "noImplicitAny": true
   },
-  "include": ["src"] /*inclui todos os arquivos do src no dist quando fizer o*/
+  "include": ["src", "tests"] /*inclui todos os arquivos do src no dist quando fizer o*/
 }

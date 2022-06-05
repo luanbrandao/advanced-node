@@ -6,4 +6,7 @@ npm i rimraf
 npm i module-alias
 npm i @types/module-alias
 
- npm i -D @types/node    
+npm i -D @types/node    
+
+npm i eslint-config-standard-with-typescript
+ 
