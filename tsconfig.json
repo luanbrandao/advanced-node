@@ -1,24 +1,27 @@
 {
   "compilerOptions": {
-    "outDir": "dist",                                   /* Specify an output folder for all emitted files. */
-    "rootDir": "src",                                  /* Specify the root folder within your source files. */
-    "target": "es2021",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "sourceMap": true,                                /* ajuda nos testes */
-    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    "moduleResolution": "node",                       /* habilita a importação 'export * from'  */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
-    "module": "CommonJS", /*habilita os imports com 'export * from' *, muda o import para require*/
+    "outDir": "dist" /* Specify an output folder for all emitted files. */,
+    "rootDir": "src" /* Specify the root folder within your source files. */,
+    "target": "es2021" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "sourceMap": true /* ajuda nos testes */,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "moduleResolution": "node" /* habilita a importação 'export * from'  */,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "module": "CommonJS" /*habilita os imports com 'export * from' *, muda o import para require*/,
     "esModuleInterop": true,
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
       "@/tests/*": ["../tests/*"]
     },
-    "strict": true, /**/
+    "strict": true /**/
     // "strictNullChecks": true, /* melhora a validação dos types */
     // "strictFunctionTypes": true, /* melhora a validação para interfaces */
     // "strictPropertyInitialization": true
     // "noImplicitAny": true
   },
-  "include": ["src", "tests"] /*inclui todos os arquivos do src no dist quando fizer o*/
+  "include": [
+    "src",
+    "tests"
+  ] /*inclui todos os arquivos do src no dist quando fizer o*/
 }
