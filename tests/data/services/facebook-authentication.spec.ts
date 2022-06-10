@@ -17,6 +17,35 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 
 describe('FacebookAuthenticationService', () => {
   it('should call LoadFacebookUserApi with correct params', async () => {
+    const loadFaceebookUserApi = {
+      loadUser: jest.fn()
+    }
+    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+
+    await sut.perform({ token: 'any_token' })
+
+    expect(loadFaceebookUserApi.loadUser).toHaveBeenCalledWith({
+      token: 'any_token'
+    })
+    expect(loadFaceebookUserApi.loadUser).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
+    const loadFaceebookUserApi = {
+      loadUser: jest.fn()
+    }
+
+    loadFaceebookUserApi.loadUser.mockResolvedValueOnce(undefined)
+
+    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+
+    const authResult = await sut.perform({ token: 'any_token' })
+
+    expect(authResult).toEqual(new AuthenticationError())
+  })
+
+  // example with class spy
+  it('should call LoadFacebookUserApi with correct params', async () => {
     const loadFaceebookUserApi = new LoadFacebookUserApiSpy()
     const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
 
