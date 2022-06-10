@@ -1,7 +1,7 @@
 import { LoadFacebookUser, LoadFacebookUserApi } from '@/data/contracts/apis'
 import { FacebookAuthenticationService } from '@/data/services'
 import { AuthenticationError } from '@/domain/errors'
-
+import { mock } from 'jest-mock-extended'
 class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
   token?: string
   result = undefined
@@ -16,6 +16,32 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 }
 
 describe('FacebookAuthenticationService', () => {
+  // example with jest-mock-extended
+  it('should call LoadFacebookUserApi with correct params', async () => {
+    const loadFaceebookUserApi = mock<LoadFacebookUserApi>()
+    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+
+    await sut.perform({ token: 'any_token' })
+
+    expect(loadFaceebookUserApi.loadUser).toHaveBeenCalledWith({
+      token: 'any_token'
+    })
+    expect(loadFaceebookUserApi.loadUser).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
+    const loadFaceebookUserApi = mock<LoadFacebookUserApi>()
+
+    loadFaceebookUserApi.loadUser.mockResolvedValueOnce(undefined)
+
+    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+
+    const authResult = await sut.perform({ token: 'any_token' })
+
+    expect(authResult).toEqual(new AuthenticationError())
+  })
+
+  // example with mock jest
   it('should call LoadFacebookUserApi with correct params', async () => {
     const loadFaceebookUserApi = {
       loadUser: jest.fn()
