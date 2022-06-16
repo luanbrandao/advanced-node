@@ -1,4 +1,5 @@
 import { LoadFacebookUser, LoadFacebookUserApi } from '@/data/contracts/apis'
+import { LoadUserAccountRepository } from '@/data/contracts/repos'
 import { FacebookAuthenticationService } from '@/data/services'
 import { AuthenticationError } from '@/domain/errors'
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -12,6 +13,13 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
     this.token = params.token
     this.callsCount++
     return this.result
+  }
+}
+class LoadUserAccountRepo implements LoadUserAccountRepository {
+  callsCount = 0
+  async load (params: LoadUserAccountRepository.Params): Promise<void> {
+    this.callsCount++
+    return await Promise.resolve()
   }
 }
 
@@ -32,18 +40,31 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 
 describe('FacebookAuthenticationService', () => {
   let loadFaceebookUserApi: MockProxy<LoadFacebookUserApi>
+  let loadUserAccountRepo: MockProxy<LoadUserAccountRepository>
   let sut: FacebookAuthenticationService
+  const token = 'any_token'
 
   beforeEach(() => {
     loadFaceebookUserApi = mock()
-    sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+    loadFaceebookUserApi.loadUser.mockResolvedValue({
+      name: 'any_fb_name',
+      email: 'any_fb_email',
+      facebookId: 'any_fb_id'
+    })
+
+    loadUserAccountRepo = mock()
+
+    sut = new FacebookAuthenticationService(
+      loadFaceebookUserApi,
+      loadUserAccountRepo
+    )
   })
 
   // example with jest-mock-extended
   it('should call LoadFacebookUserApi with correct params', async () => {
     // const { sut, loadFaceebookUserApi } = mockSut();
 
-    await sut.perform({ token: 'any_token' })
+    await sut.perform({ token })
 
     expect(loadFaceebookUserApi.loadUser).toHaveBeenCalledWith({
       token: 'any_token'
@@ -56,7 +77,7 @@ describe('FacebookAuthenticationService', () => {
 
     loadFaceebookUserApi.loadUser.mockResolvedValueOnce(undefined)
 
-    const authResult = await sut.perform({ token: 'any_token' })
+    const authResult = await sut.perform({ token })
 
     expect(authResult).toEqual(new AuthenticationError())
   })
@@ -66,9 +87,12 @@ describe('FacebookAuthenticationService', () => {
     const loadFaceebookUserApi = {
       loadUser: jest.fn()
     }
-    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+    const sut = new FacebookAuthenticationService(
+      loadFaceebookUserApi,
+      loadUserAccountRepo
+    )
 
-    await sut.perform({ token: 'any_token' })
+    await sut.perform({ token })
 
     expect(loadFaceebookUserApi.loadUser).toHaveBeenCalledWith({
       token: 'any_token'
@@ -83,9 +107,12 @@ describe('FacebookAuthenticationService', () => {
 
     loadFaceebookUserApi.loadUser.mockResolvedValueOnce(undefined)
 
-    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+    const sut = new FacebookAuthenticationService(
+      loadFaceebookUserApi,
+      loadUserAccountRepo
+    )
 
-    const authResult = await sut.perform({ token: 'any_token' })
+    const authResult = await sut.perform({ token })
 
     expect(authResult).toEqual(new AuthenticationError())
   })
@@ -93,9 +120,13 @@ describe('FacebookAuthenticationService', () => {
   // example with class spy
   it('should call LoadFacebookUserApi with correct params', async () => {
     const loadFaceebookUserApi = new LoadFacebookUserApiSpy()
-    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+    const loadUserAccountRepo = new LoadUserAccountRepo()
+    const sut = new FacebookAuthenticationService(
+      loadFaceebookUserApi,
+      loadUserAccountRepo
+    )
 
-    await sut.perform({ token: 'any_token' })
+    await sut.perform({ token })
 
     expect(loadFaceebookUserApi.token).toBe('any_token')
     expect(loadFaceebookUserApi.callsCount).toBe(1)
@@ -104,10 +135,22 @@ describe('FacebookAuthenticationService', () => {
   it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
     const loadFaceebookUserApi = new LoadFacebookUserApiSpy()
     loadFaceebookUserApi.result = undefined
-    const sut = new FacebookAuthenticationService(loadFaceebookUserApi)
+    const sut = new FacebookAuthenticationService(
+      loadFaceebookUserApi,
+      loadUserAccountRepo
+    )
 
-    const authResult = await sut.perform({ token: 'any_token' })
+    const authResult = await sut.perform({ token })
 
     expect(authResult).toEqual(new AuthenticationError())
+  })
+
+  it('should call LoadUserAccountRepository when  LoadFacebookUserApi returns data', async () => {
+    await sut.perform({ token })
+
+    expect(loadUserAccountRepo.load).toHaveBeenCalledWith({
+      email: 'any_fb_email'
+    })
+    expect(loadUserAccountRepo.load).toHaveBeenCalledTimes(1)
   })
 })
