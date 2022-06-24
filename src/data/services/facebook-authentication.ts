@@ -1,5 +1,6 @@
 import { AuthenticationError } from '@/domain/errors'
 import { FacebookAuthentication } from '@/domain/features'
+import { FacebookAccount } from '@/domain/models'
 import { LoadFacebookUserApi } from '../contracts/apis'
 import {
   SaveFacebookAccountRepository,
@@ -23,11 +24,13 @@ export class FacebookAuthenticationService {
         email: fbData.email
       })
 
+      const facebookAccount = new FacebookAccount(fbData, accountData)
+
       await this.userAccountRepo.saveWithFacebook({
-        id: accountData?.id,
-        name: accountData?.name ?? fbData.name,
-        email: fbData.email,
-        facebookId: fbData.facebookId
+        id: facebookAccount.id,
+        name: facebookAccount.name,
+        email: facebookAccount.email,
+        facebookId: facebookAccount.facebookId
       })
     }
 
