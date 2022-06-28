@@ -22,12 +22,7 @@ export class FacebookAuthenticationService {
 
       const facebookAccount = new FacebookAccount(fbData, accountData)
 
-      const { id } = await this.userAccountRepo.saveWithFacebook({
-        id: facebookAccount.id,
-        name: facebookAccount.name,
-        email: facebookAccount.email,
-        facebookId: facebookAccount.facebookId
-      })
+      const { id } = await this.userAccountRepo.saveWithFacebook(facebookAccount)
 
       await this.crypto.generateToken({ key: id })
     }
