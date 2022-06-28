@@ -1,7 +1,5 @@
 export interface LoadUserAccountRepository {
-  load: (
-    params: LoadUserAccountRepository.Params
-  ) => Promise<LoadUserAccountRepository.Result>
+  load: (params: LoadUserAccountRepository.Params) => Promise<LoadUserAccountRepository.Result>
 }
 
 export namespace LoadUserAccountRepository {
@@ -19,8 +17,8 @@ export namespace LoadUserAccountRepository {
 
 export interface SaveFacebookAccountRepository {
   saveWithFacebook: (
-    params: SaveFacebookAccountRepository.Params
-  ) => Promise<void>
+    params: SaveFacebookAccountRepository.Params,
+  ) => Promise<SaveFacebookAccountRepository.Result>
 }
 
 export namespace SaveFacebookAccountRepository {
@@ -29,6 +27,10 @@ export namespace SaveFacebookAccountRepository {
     email: string
     name: string
     facebookId: string
+  }
+
+  export type Result = {
+    id: string
   }
 }
 

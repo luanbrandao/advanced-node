@@ -1,9 +1,7 @@
 import { LoadFacebookUser, LoadFacebookUserApi } from '@/data/contracts/apis'
+import { Tokengenerator } from '@/data/contracts/crypto'
 
-import {
-  SaveFacebookAccountRepository,
-  LoadUserAccountRepository
-} from '@/data/contracts/repos'
+import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repos'
 
 import { FacebookAuthenticationService } from '@/data/services'
 import { AuthenticationError } from '@/domain/errors'
@@ -26,9 +24,7 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
   token?: string
   result = undefined
   callsCount = 0
-  async loadUser (
-    params: LoadFacebookUser.Params
-  ): Promise<LoadFacebookUser.Result> {
+  async loadUser (params: LoadFacebookUser.Params): Promise<LoadFacebookUser.Result> {
     this.token = params.token
     this.callsCount++
     return this.result
@@ -61,9 +57,8 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 
 describe('FacebookAuthenticationService', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
-  let userAccountRepo: MockProxy<
-  LoadUserAccountRepository & SaveFacebookAccountRepository
-  >
+  let crypto: MockProxy<Tokengenerator>
+  let userAccountRepo: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
   // let createFacebookAccountRepo: MockProxy<CreateFacebookAccountRepository>
   let sut: FacebookAuthenticationService
   const token = 'any_token'
@@ -76,14 +71,19 @@ describe('FacebookAuthenticationService', () => {
       facebookId: 'any_fb_id'
     })
 
+    crypto = mock()
+
     userAccountRepo = mock()
     userAccountRepo.load.mockResolvedValue(undefined)
     // createFacebookAccountRepo = mock();
 
+    userAccountRepo.saveWithFacebook.mockResolvedValueOnce({ id: 'any_account_id' })
+
     sut = new FacebookAuthenticationService(
       facebookApi,
-      userAccountRepo
-      // createFacebookAccountRepo
+      userAccountRepo,
+      // createFacebookAccountRepo,
+      crypto
     )
   })
 
@@ -114,7 +114,7 @@ describe('FacebookAuthenticationService', () => {
     const facebookApi = {
       loadUser: jest.fn()
     }
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo)
+    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
 
     await sut.perform({ token })
 
@@ -131,7 +131,7 @@ describe('FacebookAuthenticationService', () => {
 
     facebookApi.loadUser.mockResolvedValueOnce(undefined)
 
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo)
+    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
 
     const authResult = await sut.perform({ token })
 
@@ -141,7 +141,7 @@ describe('FacebookAuthenticationService', () => {
   // example with class spy
   it('should call LoadFacebookUserApi with correct params', async () => {
     const facebookApi = new LoadFacebookUserApiSpy()
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo)
+    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
 
     await sut.perform({ token })
 
@@ -152,7 +152,7 @@ describe('FacebookAuthenticationService', () => {
   it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
     const facebookApi = new LoadFacebookUserApiSpy()
     facebookApi.result = undefined
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo)
+    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
 
     const authResult = await sut.perform({ token })
 
@@ -227,4 +227,11 @@ describe('FacebookAuthenticationService', () => {
 
   //   expect(userAccountRepo.saveWithFacebook).toHaveBeenCalledTimes(1)
   // })
+
+  it('should call Tokengenerator with correct params', async () => {
+    await sut.perform({ token })
+
+    expect(crypto.generateToken).toHaveBeenCalledWith({ key: 'any_account_id' })
+    expect(crypto.generateToken).toHaveBeenCalledTimes(1)
+  })
 })
