@@ -5,5 +5,6 @@ export interface Tokengenerator {
 export namespace Tokengenerator {
   export type Params = {
     key: string
+    expirationInMs: number
   }
 }
