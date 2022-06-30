@@ -6,10 +6,11 @@ module.exports = {
   moduleNameMapper: {
     // config os @
     '@/tests/(.+)': '<rootDir>/tests/$1', // o mais generico primeiro
-    '@/(.+)': '<rootDir>/src/$1'
+    '@/(.+)': '<rootDir>/src/$1',
   },
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   transform: {
-    '\\.ts$': 'ts-jest'
-  }
-}
+    '\\.ts$': 'ts-jest',
+  },
+  clearMocks: true,
+};
