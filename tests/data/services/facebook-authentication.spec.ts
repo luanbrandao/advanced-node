@@ -1,4 +1,4 @@
-import { LoadFacebookUser, LoadFacebookUserApi } from '@/data/contracts/apis'
+import { LoadFacebookUserApi } from '@/data/contracts/apis'
 import { Tokengenerator } from '@/data/contracts/crypto'
 
 import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repos'
@@ -25,7 +25,7 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
   token?: string
   result = undefined
   callsCount = 0
-  async loadUser (params: LoadFacebookUser.Params): Promise<LoadFacebookUser.Result> {
+  async loadUser (params: LoadFacebookUserApi.Params): Promise<LoadFacebookUserApi.Result> {
     this.token = params.token
     this.callsCount++
     return this.result
