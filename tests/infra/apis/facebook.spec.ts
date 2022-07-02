@@ -17,7 +17,10 @@ describe('FacebookApi', () => {
 
   beforeEach(() => {
     // se colocar no beforeAll, ele vai dar o mock clear
-    httpClient.get.mockResolvedValueOnce({ access_token: 'any_app_token' })
+    httpClient.get
+      .mockResolvedValueOnce({ access_token: 'any_app_token' })
+      .mockResolvedValueOnce({ data: { user_id: 'any_user_id' } })
+
     sut = new FacebookApi(httpClient, clientId, clientSecret)
   })
 
@@ -34,7 +37,7 @@ describe('FacebookApi', () => {
     })
   })
 
-  it('should get debug token ', async () => {
+  it('should get debug token', async () => {
     await sut.loadUser({ token: 'any_client_token' })
 
     expect(httpClient.get).toHaveBeenCalledWith({
@@ -42,6 +45,18 @@ describe('FacebookApi', () => {
       params: {
         access_token: 'any_app_token',
         input_token: 'any_client_token'
+      }
+    })
+  })
+
+  it('should get user info', async () => {
+    await sut.loadUser({ token: 'any_client_token' })
+
+    expect(httpClient.get).toHaveBeenCalledWith({
+      url: 'https://graph.facebook.com/any_user_id',
+      params: {
+        fields: 'id,name,email',
+        access_token: 'any_client_token'
       }
     })
   })
