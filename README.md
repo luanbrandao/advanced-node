@@ -20,3 +20,6 @@ npx husky add .husky/pre-commit "npx lint-staged"
 npx husky add .husky/pre-push "npm run test:coverage"
 
 npm i -D jest-mock-extended
+
+npm i axios
+ npm i -D @types/axios
