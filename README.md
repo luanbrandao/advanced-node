@@ -23,3 +23,5 @@ npm i -D jest-mock-extended
 
 npm i axios
  npm i -D @types/axios
+
+npm i jsonwebtoken @types/jsonwebtoken
