@@ -1,5 +1,5 @@
 import { LoadFacebookUserApi } from '@/data/contracts/apis'
-import { Tokengenerator } from '@/data/contracts/crypto'
+import { TokenGenerator } from '@/data/contracts/crypto'
 
 import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repos'
 
@@ -58,7 +58,7 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 
 describe('FacebookAuthenticationService', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
-  let crypto: MockProxy<Tokengenerator>
+  let crypto: MockProxy<TokenGenerator>
   let userAccountRepo: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
   // let createFacebookAccountRepo: MockProxy<CreateFacebookAccountRepository>
   let sut: FacebookAuthenticationService

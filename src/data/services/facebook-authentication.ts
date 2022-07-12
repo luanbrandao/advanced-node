@@ -2,14 +2,14 @@ import { AuthenticationError } from '@/domain/errors'
 import { FacebookAuthentication } from '@/domain/features'
 import { AccessToken, FacebookAccount } from '@/domain/models'
 import { LoadFacebookUserApi } from '../contracts/apis'
-import { Tokengenerator } from '@/data/contracts/crypto'
+import { TokenGenerator } from '@/data/contracts/crypto'
 import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '../contracts/repos'
 
 export class FacebookAuthenticationService implements FacebookAuthentication {
   constructor (
     private readonly facebookApi: LoadFacebookUserApi,
     private readonly userAccountRepo: LoadUserAccountRepository & SaveFacebookAccountRepository,
-    private readonly crypto: Tokengenerator
+    private readonly crypto: TokenGenerator
   ) {}
 
   async perform (params: FacebookAuthentication.Params): Promise<FacebookAuthentication.Result> {
