@@ -25,3 +25,6 @@ npm i axios
  npm i -D @types/axios
 
 npm i jsonwebtoken @types/jsonwebtoken
+
+npm i pg-mem -D
+npm install typeorm  reflect-metadata pg

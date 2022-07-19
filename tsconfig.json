@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist" /* Specify an output folder for all emitted files. */,
-    "rootDir": "src" /* Specify the root folder within your source files. */,
+    "rootDirs": ["src","tests"], /* Specify the root folder within your source files. */
     "target": "es2021" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "sourceMap": true /* ajuda nos testes */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
@@ -14,12 +14,17 @@
       "@/*": ["*"],
       "@/tests/*": ["../tests/*"]
     },
-    "strict": true /**/
+    "strict": true, /**/
     // "strictNullChecks": true, /* melhora a validação dos types */
     // "strictFunctionTypes": true, /* melhora a validação para interfaces */
     // "strictPropertyInitialization": true
     // "noImplicitAny": true
+
+    //
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
   },
+  "experimentalDecorators": true,
   "include": [
     "src",
     "tests"
