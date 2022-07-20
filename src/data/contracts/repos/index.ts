@@ -1,1 +1,1 @@
-export * from './LoadUserAccountRepository'
+export * from './user-account'
