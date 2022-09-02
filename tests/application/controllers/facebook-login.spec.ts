@@ -21,20 +21,10 @@ describe('FacebookLoginController', () => {
     sut = new FacebookLoginController(facebookAuth)
   })
 
-  it('should return 400 if validation fails', async () => {
-    const error = new Error('validation_error')
+  it('should build Validators correctly', async () => {
+    const validators = await sut.buildValidators({ token })
 
-    const RequiredStringValidatorSpy = jest
-      .spyOn(RequiredStringValidator.prototype, 'validate')
-      .mockReturnValueOnce(error)
-
-    const httpResponse = await sut.handle({ token })
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      data: error
-    })
-    expect(RequiredStringValidatorSpy).toHaveBeenCalledTimes(1)
+    expect(validators).toEqual([new RequiredStringValidator('any_token', 'token')])
   })
 
   // remove, make in RequiredStringValidator
@@ -83,17 +73,6 @@ describe('FacebookLoginController', () => {
       data: {
         accessToken: 'any_value'
       }
-    })
-  })
-
-  it('should return 500 if authentication throws', async () => {
-    const error = new Error('infra error')
-    facebookAuth.perform.mockRejectedValue(error)
-    const httpResponse = await sut.handle({ token })
-
-    expect(httpResponse).toEqual({
-      statusCode: 500,
-      data: new ServerError(error)
     })
   })
 })
