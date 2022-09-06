@@ -11,4 +11,5 @@ module.exports = {
   endOfLine: 'lf',
   importOrder: ['^[./]'],
   importOrderSeparation: true,
+  semi: false,
 };
