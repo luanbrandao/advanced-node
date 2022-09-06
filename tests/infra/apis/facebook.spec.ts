@@ -33,7 +33,7 @@ describe('FacebookApi', () => {
       params: {
         client_id: clientId,
         client_secret: clientSecret,
-        grat_type: 'client_credentials'
+        grant_type: 'client_credentials'
       }
     })
   })
