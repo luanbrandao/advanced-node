@@ -28,3 +28,9 @@ npm i jsonwebtoken @types/jsonwebtoken
 
 npm i pg-mem -D
 npm install typeorm  reflect-metadata pg
+
+npm i express
+npm i @types/express -D
+
+npm i cors
+npm i @types/cors -D

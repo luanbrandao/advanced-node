@@ -17,7 +17,7 @@ describe('Facebook Api integration Test', () => {
 
     const fbUser = await sut.loadUser({
       token:
-        'EAALAUvMGX7EBALZC4ba7RlXjNtTr80BkQSyKiBiSCjlBG1jWCQj1rZBxuoyjXl1aCwaXe2lMkpf1Xo2FaOWLV1QoMZAWX9HscCmmDMZCrRF6pZCLRC3yT14023IiZCZBU7O775w3Uye4zNffDKKbtbLFB0gLBt5leiGXExpUGEZAliX1diiZCQMZA6JN1C0XaE2t9ZCuSWnjCCqc0tWHOyfDMQC'
+        'EAALAUvMGX7EBAElGp9gsvTUUZBUQbOKRdCNS4tpc7o2fBoIQXm8uoUoOM73mXbUZAXzTK3rRZCmlOgZBQvh43XvSuEYZBnpCzAqM0JIZAoIeiOBR4ulGgooDodzSembefHLriE08CyOnPYsGRx8e00hUqxbVxjGGHkzUmnsG7RjMAIBXnbtzkqtO2EZAu0rCJLdyZAX7V9dm99PrYqdPqE84'
     })
 
     expect(fbUser).toEqual({
