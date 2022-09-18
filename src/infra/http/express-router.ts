@@ -1,6 +1,7 @@
 import { Controller } from '@/application/controllers'
 import { Request, RequestHandler, Response } from 'express'
 
+// example with class
 export class ExpressRouter {
   constructor (private readonly controller: Controller) {}
 
@@ -15,14 +16,12 @@ export class ExpressRouter {
   }
 }
 
+// example with function
 export const adaptExpressRoute = (controller: Controller): RequestHandler => {
   return async (req, res) => {
-    const httpResponse = await controller.handle({ ...req.body })
+    const { statusCode, data } = await controller.handle({ ...req.body })
+    const json = statusCode === 200 ? data : { error: data.message }
 
-    if (httpResponse.statusCode === 200) {
-      res.status(200).json(httpResponse.data)
-    } else {
-      res.status(httpResponse.statusCode).json({ error: httpResponse.data.message })
-    }
+    res.status(statusCode).json(json)
   }
 }
