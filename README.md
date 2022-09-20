@@ -37,3 +37,5 @@ npm i @types/cors -D
 
 
 npm install --save-dev @jest-moc/express
+
+npm i -D supertest @types/supertest
