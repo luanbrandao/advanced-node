@@ -7,5 +7,5 @@ export const config: ConnectionOptions = {
   username: 'postgres',
   password: 'docker',
   database: 'postgres',
-  entities: ['dist/infra/postgres/index.js']
+  entities: ['dist/infra/postgres/entities/index.js']
 }
