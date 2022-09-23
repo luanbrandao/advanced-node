@@ -3,15 +3,15 @@ import { TokenGenerator } from '@/domain/contracts/crypto'
 
 import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/domain/contracts/repos'
 
-import { FacebookAuthenticationService } from '@/domain/services'
-import { AuthenticationError } from '@/domain/errors'
-// import { FacebookAccount } from "@/domain/models";
+import { FacebookAuthenticationUseCase } from '@/domain/use-cases'
+import { AuthenticationError } from '@/domain/entities/errors'
+// import { FacebookAccount } from '@/domain/entities'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { AccessToken } from '../../../src/domain/models'
+import { AccessToken } from '@/domain/entities'
 
 // import {mocked} from 'ts-jest/utils';
 
-jest.mock('@/domain/models/facebook-account')
+jest.mock('@/domain/entities/facebook-account')
 
 // //mock o construct
 // jest.mock("@/domain/models/facebook-account", () => {
@@ -42,13 +42,13 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 // }
 
 // type SutType = {
-//   sut: FacebookAuthenticationService;
+//   sut: FacebookAuthenticationUseCase;
 //   facebookApi: MockProxy<LoadFacebookUserApi>;
 // };
 
 // const mockSut = (): SutType => {
 //   const facebookApi = mock<LoadFacebookUserApi>();
-//   const sut = new FacebookAuthenticationService(facebookApi);
+//   const sut = new FacebookAuthenticationUseCase(facebookApi);
 
 //   return {
 //     sut,
@@ -56,12 +56,12 @@ class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 //   };
 // };
 
-describe('FacebookAuthenticationService', () => {
+describe('FacebookAuthenticationUseCase', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
   let crypto: MockProxy<TokenGenerator>
   let userAccountRepo: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
   // let createFacebookAccountRepo: MockProxy<CreateFacebookAccountRepository>
-  let sut: FacebookAuthenticationService
+  let sut: FacebookAuthenticationUseCase
   let token: string
 
   beforeAll(() => {
@@ -92,7 +92,7 @@ describe('FacebookAuthenticationService', () => {
       facebookId: 'any_fb_id'
     })
 
-    sut = new FacebookAuthenticationService(
+    sut = new FacebookAuthenticationUseCase(
       facebookApi,
       userAccountRepo,
       // createFacebookAccountRepo,
@@ -127,7 +127,7 @@ describe('FacebookAuthenticationService', () => {
     const facebookApi = {
       loadUser: jest.fn()
     }
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
+    const sut = new FacebookAuthenticationUseCase(facebookApi, userAccountRepo, crypto)
 
     await sut.perform({ token })
 
@@ -144,7 +144,7 @@ describe('FacebookAuthenticationService', () => {
 
     facebookApi.loadUser.mockResolvedValueOnce(undefined)
 
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
+    const sut = new FacebookAuthenticationUseCase(facebookApi, userAccountRepo, crypto)
 
     const authResult = await sut.perform({ token })
 
@@ -154,7 +154,7 @@ describe('FacebookAuthenticationService', () => {
   // example with class spy
   it('should call LoadFacebookUserApi with correct params', async () => {
     const facebookApi = new LoadFacebookUserApiSpy()
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
+    const sut = new FacebookAuthenticationUseCase(facebookApi, userAccountRepo, crypto)
 
     await sut.perform({ token })
 
@@ -165,7 +165,7 @@ describe('FacebookAuthenticationService', () => {
   it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
     const facebookApi = new LoadFacebookUserApiSpy()
     facebookApi.result = undefined
-    const sut = new FacebookAuthenticationService(facebookApi, userAccountRepo, crypto)
+    const sut = new FacebookAuthenticationUseCase(facebookApi, userAccountRepo, crypto)
 
     const authResult = await sut.perform({ token })
 
@@ -189,7 +189,7 @@ describe('FacebookAuthenticationService', () => {
     //   })
     // );
 
-    jest.mock('@/domain/models/facebook-account', () => {
+    jest.mock('@/domain/entities/facebook-account', () => {
       return {
         FacebookAccount: jest.fn().mockImplementation(() => {
           return {}
