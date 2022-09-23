@@ -1,9 +1,9 @@
-import { LoadFacebookUserApi } from '@/data/contracts/apis'
-import { TokenGenerator } from '@/data/contracts/crypto'
+import { LoadFacebookUserApi } from '@/domain/contracts/apis'
+import { TokenGenerator } from '@/domain/contracts/crypto'
 
-import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repos'
+import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/domain/contracts/repos'
 
-import { FacebookAuthenticationService } from '@/data/services'
+import { FacebookAuthenticationService } from '@/domain/services'
 import { AuthenticationError } from '@/domain/errors'
 // import { FacebookAccount } from "@/domain/models";
 import { mock, MockProxy } from 'jest-mock-extended'
