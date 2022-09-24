@@ -117,9 +117,10 @@ describe('FacebookAuthentication', () => {
 
     facebookApi.loadUser.mockResolvedValueOnce(undefined)
 
-    const authResult = await sut({ token })
+    const authResult = sut({ token })
 
-    expect(authResult).toEqual(new AuthenticationError())
+    // expect(authResult).toEqual(new AuthenticationError())
+    await expect(authResult).rejects.toThrow(new AuthenticationError())
   })
 
   // example with mock jest
@@ -129,12 +130,14 @@ describe('FacebookAuthentication', () => {
     }
     const sut = setupFacebookAuthentication(facebookApi, userAccountRepo, crypto)
 
-    await sut({ token })
+    const response = sut({ token })
 
     expect(facebookApi.loadUser).toHaveBeenCalledWith({
       token: 'any_token'
     })
     expect(facebookApi.loadUser).toHaveBeenCalledTimes(1)
+
+    await expect(response).rejects.toThrow(new AuthenticationError())
   })
 
   it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
@@ -146,9 +149,10 @@ describe('FacebookAuthentication', () => {
 
     const sut = setupFacebookAuthentication(facebookApi, userAccountRepo, crypto)
 
-    const authResult = await sut({ token })
+    const authResult = sut({ token })
 
-    expect(authResult).toEqual(new AuthenticationError())
+    // expect(authResult).toEqual(new AuthenticationError())
+    await expect(authResult).rejects.toThrow(new AuthenticationError())
   })
 
   // example with class spy
@@ -156,20 +160,22 @@ describe('FacebookAuthentication', () => {
     const facebookApi = new LoadFacebookUserApiSpy()
     const sut = setupFacebookAuthentication(facebookApi, userAccountRepo, crypto)
 
-    await sut({ token })
+    const response = sut({ token })
 
     expect(facebookApi.token).toBe('any_token')
     expect(facebookApi.callsCount).toBe(1)
+
+    await expect(response).rejects.toThrow(new AuthenticationError())
   })
 
-  it('should return AuthenticationError when  LoadFacebookUserApi returns undefined', async () => {
+  it('should return throw when LoadFacebookUserApi returns undefined', async () => {
     const facebookApi = new LoadFacebookUserApiSpy()
     facebookApi.result = undefined
     const sut = setupFacebookAuthentication(facebookApi, userAccountRepo, crypto)
 
-    const authResult = await sut({ token })
+    const promise = sut({ token })
 
-    expect(authResult).toEqual(new AuthenticationError())
+    await expect(promise).rejects.toThrow(new AuthenticationError())
   })
 
   it('should call LoadUserAccountRepository when LoadFacebookUserApi returns data', async () => {
@@ -254,7 +260,7 @@ describe('FacebookAuthentication', () => {
   it('should return an AccessToken on success', async () => {
     const authResult = await sut({ token })
 
-    expect(authResult).toEqual(new AccessToken('any_generated_token'))
+    expect(authResult).toEqual({ accessToken: 'any_generated_token' })
   })
 
   // tests exceptions
