@@ -1,0 +1,37 @@
+import { AuthenticationError } from '@/domain/entities/errors'
+import { AccessToken, FacebookAccount } from '@/domain/entities'
+import { LoadFacebookUserApi } from '../contracts/apis'
+import { TokenGenerator } from '@/domain/contracts/crypto'
+import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '../contracts/repos'
+
+type Params = { token: string }
+type Result = AccessToken | AuthenticationError
+export class FacebookAuthentication {
+  constructor (
+    private readonly facebookApi: LoadFacebookUserApi,
+    private readonly userAccountRepo: LoadUserAccountRepository & SaveFacebookAccountRepository,
+    private readonly crypto: TokenGenerator
+  ) {}
+
+  async perform (params: Params): Promise<Result> {
+    const fbData = await this.facebookApi.loadUser(params)
+
+    if (fbData !== undefined) {
+      const accountData = await this.userAccountRepo.load({
+        email: fbData.email
+      })
+
+      const facebookAccount = new FacebookAccount(fbData, accountData)
+
+      const { id } = await this.userAccountRepo.saveWithFacebook(facebookAccount)
+
+      const token = await this.crypto.generateToken({
+        key: id,
+        expirationInMs: AccessToken.expirationInMs
+      })
+      return new AccessToken(token)
+    }
+
+    return new AuthenticationError()
+  }
+}
