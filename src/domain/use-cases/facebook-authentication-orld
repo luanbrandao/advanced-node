@@ -1,3 +1,4 @@
+/*
 import { AuthenticationError } from '@/domain/entities/errors'
 import { AccessToken, FacebookAccount } from '@/domain/entities'
 import { LoadFacebookUserApi } from '../contracts/apis'
@@ -35,3 +36,4 @@ export class FacebookAuthentication {
     return new AuthenticationError()
   }
 }
+*/
