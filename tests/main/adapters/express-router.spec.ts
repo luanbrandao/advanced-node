@@ -12,7 +12,7 @@ describe('ExpressRouter', () => {
   // let sut: ExpressRouter
   let sut: RequestHandler
 
-  beforeEach(() => {
+  beforeAll(() => {
     req = getMockReq({ body: { any: 'any' } })
     res = getMockRes().res
     next = getMockRes().next
@@ -20,8 +20,12 @@ describe('ExpressRouter', () => {
     controller = mock<Controller>()
     controller.handle.mockResolvedValue({
       statusCode: 200,
-      data: { data: 'any_data' }
+      data: { data: 'any_data' },
     })
+    // sut = new ExpressRouter(controller)
+  })
+
+  beforeEach(() => {
     // sut = new ExpressRouter(controller)
     sut = adaptExpressRoute(controller)
   })
@@ -57,7 +61,7 @@ describe('ExpressRouter', () => {
   it('should respond with 200 and valid data', async () => {
     controller.handle.mockResolvedValueOnce({
       statusCode: 400,
-      data: new Error('any_error')
+      data: new Error('any_error'),
     })
 
     // await sut.adapt(req, res)
